@@ -96,7 +96,6 @@ jobs:
       working-directory: ${{runner.workspace}}
       run: |
         cat build-rp2040/flash_nuke.uf2 build-rp2350/flash_nuke.uf2 > universal_flash_nuke.uf2
-        zip universal_flash_nuke.zip universal_flash_nuke.uf2
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
@@ -104,13 +103,8 @@ jobs:
         name: universal_flash_nuke
         path: ${{runner.workspace}}/universal_flash_nuke.uf2
 
-    - name: Upload Release
+    - name: Upload Release .uf2
       if: github.event_name == 'release'
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      uses: softprops/action-gh-release@v2
       with:
-        asset_path: ${{runner.workspace}}/universal_flash_nuke.zip
-        upload_url: ${{github.event.release.upload_url}}
-        asset_name: universal_flash_nuke.zip
-        asset_content_type: application/zip
+        files: ${{runner.workspace}}/universal_flash_nuke.uf2
