@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: ubuntu-20.04
+          - os: ubuntu-latest
             name: Linux
             cache-key: linux
             cmake-args: '-DPICO_SDK_PATH=$GITHUB_WORKSPACE/pico-sdk -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache'
@@ -30,7 +30,7 @@ jobs:
 
     steps:
     - name: Compiler Cache
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: /home/runner/.ccache
         key: ccache-cmake-${{github.ref}}-${{matrix.board}}-${{github.sha}}
@@ -40,14 +40,15 @@ jobs:
           ccache-cmake
 
     - name: Checkout Code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         path: src
 
     # Checkout the Pico SDK
     - name: Checkout Pico SDK
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
+        tag: '2.0.0'
         repository: raspberrypi/pico-sdk
         path: pico-sdk
         submodules: true
@@ -98,13 +99,13 @@ jobs:
         cat build-rp2040/flash_nuke.uf2 build-rp2350/flash_nuke.uf2 > universal_flash_nuke.uf2
 
     - name: Upload Artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: universal_flash_nuke
         path: ${{runner.workspace}}/universal_flash_nuke.uf2
 
     - name: Upload Release .uf2
       if: github.event_name == 'release'
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b
       with:
         files: ${{runner.workspace}}/universal_flash_nuke.uf2
