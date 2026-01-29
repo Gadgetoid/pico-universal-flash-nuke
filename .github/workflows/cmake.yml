@@ -48,7 +48,7 @@ jobs:
     - name: Checkout Pico SDK
       uses: actions/checkout@v6
       with:
-        ref: '2.0.0'
+        ref: '2.2.0'
         repository: raspberrypi/pico-sdk
         path: pico-sdk
         submodules: true
